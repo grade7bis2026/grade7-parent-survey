@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grade 7 — Parent Experience Survey</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --paper: #faf8f4;
+    --accent: #c4704a;
+    --accent-light: #f0e6de;
+    --muted: #7a7a8a;
+    --border: #e2ddd6;
+    --color: #7a5b8a;
+    --light: #f0eaf5;
+    --success: #4a7c59;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  .site-header {
+    background: var(--ink);
+    padding: 2.5rem 1.5rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .site-header::before {
+    content: '';
+    position: absolute;
+    top: -50px; right: -50px;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: rgba(122,91,138,0.15);
+  }
+  .header-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #c4a0e8;
+    margin-bottom: 0.5rem;
+  }
+  .site-header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(1.4rem, 4vw, 2rem);
+    color: #fff;
+    line-height: 1.2;
+    margin-bottom: 0.8rem;
+  }
+  .intro-text {
+    color: rgba(255,255,255,0.65);
+    font-size: 0.86rem;
+    font-weight: 300;
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+  .framework-tags {
+    display: flex; flex-wrap: wrap; gap: 0.35rem;
+    margin-top: 0.9rem; justify-content: center;
+  }
+  .framework-tag {
+    font-size: 0.67rem; letter-spacing: 0.04em;
+    padding: 0.2rem 0.55rem; border-radius: 20px;
+    background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.45);
+  }
+
+  .progress-bar-wrap { background: var(--border); height: 3px; }
+  .progress-bar-fill {
+    height: 3px; background: var(--color);
+    transition: width 0.3s ease; width: 0%;
+  }
+
+  .form-wrap {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 1rem 5rem;
+  }
+
+  .survey-card {
+    background: #fff;
+    border-radius: 0 0 16px 16px;
+    box-shadow: 0 4px 30px rgba(26,26,46,0.07);
+    overflow: hidden;
+  }
+
+  .section {
+    padding: 1.5rem 1.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .section:last-of-type { border-bottom: none; }
+
+  .section-header {
+    display: flex; align-items: flex-start; gap: 0.75rem;
+    margin-bottom: 1.2rem;
+  }
+  .section-icon {
+    width: 34px; height: 34px; border-radius: 8px;
+    background: var(--light);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; flex-shrink: 0; margin-top: 2px;
+  }
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1rem; line-height: 1.3;
+  }
+  .section-subtitle {
+    font-size: 0.74rem; color: var(--muted);
+    margin-top: 0.2rem; font-style: italic;
+  }
+
+  .question {
+    margin-bottom: 1.4rem;
+    padding-bottom: 1.4rem;
+    border-bottom: 1px dashed var(--border);
+  }
+  .question:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+  .question.unanswered .q-text { color: #b05030; }
+  .question.unanswered .q-label::after { content: ' ← please answer'; color: #b05030; font-style: italic; font-size: 0.72rem; }
+
+  .q-label {
+    font-size: 0.68rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--color);
+    font-weight: 500; margin-bottom: 0.35rem;
+  }
+  .q-text {
+    font-size: 0.92rem; line-height: 1.55; margin-bottom: 0.85rem;
+  }
+
+  .scale-options { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .scale-btn {
+    padding: 0.45rem 0.85rem; border-radius: 6px;
+    border: 1.5px solid var(--border); background: #fff;
+    font-family: 'DM Sans', sans-serif; font-size: 0.8rem;
+    cursor: pointer; transition: all 0.15s; color: var(--ink);
+  }
+  .scale-btn:hover { border-color: var(--color); background: var(--light); }
+  .scale-btn.selected { border-color: var(--color); background: var(--light); color: var(--color); font-weight: 500; }
+
+  .yesno-options { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .yesno-btn {
+    padding: 0.5rem 1rem; border-radius: 6px;
+    border: 1.5px solid var(--border); background: #fff;
+    font-family: 'DM Sans', sans-serif; font-size: 0.82rem;
+    cursor: pointer; transition: all 0.15s; color: var(--ink);
+  }
+  .yesno-btn:hover { border-color: var(--color); background: var(--light); }
+  .yesno-btn.selected { border-color: var(--color); background: var(--light); color: var(--color); font-weight: 500; }
+
+  .gender-options { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .gender-btn {
+    padding: 0.6rem 1.4rem; border-radius: 8px;
+    border: 1.5px solid var(--border); background: #fff;
+    font-family: 'DM Sans', sans-serif; font-size: 0.88rem;
+    cursor: pointer; transition: all 0.15s; color: var(--ink);
+  }
+  .gender-btn:hover { border-color: var(--color); background: var(--light); }
+  .gender-btn.selected { border-color: var(--color); background: var(--light); color: var(--color); font-weight: 500; }
+
+  .open-input {
+    width: 100%; padding: 0.75rem 1rem;
+    border: 1.5px solid var(--border); border-radius: 8px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.88rem;
+    color: var(--ink); background: var(--paper);
+    resize: vertical; min-height: 90px; line-height: 1.5;
+    transition: border-color 0.15s;
+  }
+  .open-input:focus { outline: none; border-color: var(--color); background: #fff; }
+
+  .submit-area {
+    padding: 1.5rem 1.8rem;
+    background: var(--paper);
+    border-top: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 0.8rem;
+  }
+  .submit-note { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+  .btn-submit {
+    padding: 0.9rem 2rem; border-radius: 9px; border: none;
+    background: var(--color); color: #fff;
+    font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+    font-weight: 500; cursor: pointer; transition: all 0.2s;
+    align-self: flex-start;
+  }
+  .btn-submit:hover { background: #6a4a7a; transform: translateY(-1px); }
+  .btn-submit:disabled { background: var(--muted); cursor: not-allowed; transform: none; }
+
+  .error-msg {
+    display: none; background: #fff0ee;
+    border: 1px solid #f0c0b8; border-radius: 8px;
+    padding: 0.8rem 1rem; font-size: 0.82rem; color: #a04030; line-height: 1.5;
+  }
+
+  .success-screen {
+    display: none; text-align: center; padding: 3.5rem 2rem;
+  }
+  .success-screen .check { font-size: 3.5rem; margin-bottom: 1rem; }
+  .success-screen h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.6rem; margin-bottom: 0.6rem;
+  }
+  .success-screen p { color: var(--muted); font-size: 0.88rem; line-height: 1.7; }
+
+  @media(max-width: 480px) {
+    .section { padding: 1.2rem; }
+    .submit-area { padding: 1.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-label">Bombay International School · Grade 7 · 2025–26</div>
+  <h1>Parent Experience Survey</h1>
+  <p class="intro-text">Many of us have had informal conversations about our children's experience this year. This survey moves those conversations from anecdote to evidence — collating our shared experiences anonymously to understand what the cohort is feeling as a whole. Please respond based on what you have directly observed in your child.</p>
+  <div class="framework-tags">
+    <span class="framework-tag">Tripod Framework — teacher relationships</span>
+    <span class="framework-tag">PISA School Climate — belonging & fairness</span>
+    <span class="framework-tag">Anonymous · ~5 mins</span>
+  </div>
+</header>
+
+<div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress"></div></div>
+
+<div class="form-wrap">
+  <div class="survey-card">
+    <div id="survey-body">
+
+      <!-- GENDER -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon">👤</div>
+          <div><div class="section-title">One quick thing first</div></div>
+        </div>
+        <div class="question" data-q="gender">
+          <div class="q-label">My child identifies as</div>
+          <div class="gender-options">
+            <button class="gender-btn" onclick="pick(this,'gender')">Girl</button>
+            <button class="gender-btn" onclick="pick(this,'gender')">Boy</button>
+            <button class="gender-btn" onclick="pick(this,'gender')">Prefer not to say</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION A: TEACHERS -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon">🧑‍🏫</div>
+          <div>
+            <div class="section-title">Teachers & communication</div>
+            <div class="section-subtitle">Tripod: Care · CLASS Emotional Support · PISA Fairness</div>
+          </div>
+        </div>
+
+        <div class="question" data-q="p1">
+          <div class="q-label">1 of 9</div>
+          <div class="q-text">My child feels respected and treated fairly by their teachers.</div>
+          <div class="scale-options">
+            <button class="scale-btn" onclick="pick(this,'p1')">Strongly Agree</button>
+            <button class="scale-btn" onclick="pick(this,'p1')">Agree</button>
+            <button class="scale-btn" onclick="pick(this,'p1')">Neutral</button>
+            <button class="scale-btn" onclick="pick(this,'p1')">Disagree</button>
+            <button class="scale-btn" onclick="pick(this,'p1')">Strongly Disagree</button>
+          </div>
+        </div>
+
+        <div class="question" data-q="p2">
+          <div class="q-label">2 of 9</div>
+          <div class="q-text">The way teachers communicate with this class has had an impact on my child's confidence or self-worth.</div>
+          <div class="scale-options">
+            <button class="scale-btn" onclick="pick(this,'p2')">Positively — they feel encouraged</button>
+            <button class="scale-btn" onclick="pick(this,'p2')">No noticeable impact</button>
+            <button class="scale-btn" onclick="pick(this,'p2')">Somewhat negatively</button>
+            <button class="scale-btn" onclick="pick(this,'p2')">Significantly negatively</button>
+          </div>
+        </div>
+
+        <div class="question" data-q="p3">
+          <div class="q-label">3 of 9</div>
+          <div class="q-text">My child has mentioned feeling their class is viewed or treated differently to others.</div>
+          <div class="yesno-options">
+            <button class="yesno-btn" onclick="pick(this,'p3')">Yes, more than once</button>
+            <button class="yesno-btn" onclick="pick(this,'p3')">Once or twice</button>
+            <button class="yesno-btn" onclick="pick(this,'p3')">Not that I'm aware of</button>
+          </div>
+        </div>
+
+        <div class="question" data-q="p4">
+          <div class="q-label">4 of 9</div>
+          <div class="q-text">The school's approach to child wellbeing matches what I see in practice.</div>
+          <div class="scale-options">
+            <button class="scale-btn" onclick="pick(this,'p4')">Strongly Agree</button>
+            <button class="scale-btn" onclick="pick(this,'p4')">Agree</button>
+            <button class="scale-btn" onclick="pick(this,'p4')">Neutral</button>
+            <button class="scale-btn" onclick="pick(this,'p4')">Disagree</button>
+            <button class="scale-btn" onclick="pick(this,'p4')">Strongly Disagree</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION B: ACADEMIC -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon">📚</div>
+          <div>
+            <div class="section-title">Academic experience</div>
+            <div class="section-subtitle">Tripod: Challenge · Captivate</div>
+          </div>
+        </div>
+
+        <div class="question" data-q="p5">
+          <div class="q-label">5 of 9</div>
+          <div class="q-text">My child's academic situation this year is best described as:</div>
+          <div class="scale-options">
+            <button class="scale-btn" onclick="pick(this,'p5')">Thriving and engaged</button>
+            <button class="scale-btn" onclick="pick(this,'p5')">Mostly keeping up</button>
+            <button class="scale-btn" onclick="pick(this,'p5')">Bored / underchallenged</button>
+            <button class="scale-btn" onclick="pick(this,'p5')">Struggling to keep up</button>
+            <button class="scale-btn" onclick="pick(this,'p5')">Significantly falling behind</button>
+          </div>
+        </div>
+
+        <div class="question" data-q="p7">
+          <div class="q-label">6 of 9</div>
+          <div class="q-text">When my child has needed academic support, the school has responded adequately.</div>
+          <div class="scale-options">
+            <button class="scale-btn" onclick="pick(this,'p7')">Strongly Agree</button>
+            <button class="scale-btn" onclick="pick(this,'p7')">Agree</button>
+            <button class="scale-btn" onclick="pick(this,'p7')">N/A</button>
+            <button class="scale-btn" onclick="pick(this,'p7')">Disagree</button>
+            <button class="scale-btn" onclick="pick(this,'p7')">Strongly Disagree</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION C: SOCIAL -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon">🤝</div>
+          <div>
+            <div class="section-title">Social environment</div>
+            <div class="section-subtitle">PISA Belonging · Olweus adapted</div>
+          </div>
+        </div>
+
+        <div class="question" data-q="p9">
+          <div class="q-label">7 of 9</div>
+          <div class="q-text">My child has experienced or witnessed difficult social experiences at school this year.</div>
+          <div class="yesno-options">
+            <button class="yesno-btn" onclick="pick(this,'p9')">Yes — directly experienced</button>
+            <button class="yesno-btn" onclick="pick(this,'p9')">Yes — witnessed others</button>
+            <button class="yesno-btn" onclick="pick(this,'p9')">Not that I'm aware of</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION D: OVERALL -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon">⭐</div>
+          <div>
+            <div class="section-title">Overall</div>
+            <div class="section-subtitle">One rating, then two open questions — these matter most</div>
+          </div>
+        </div>
+
+        <div class="question" data-q="p10">
+          <div class="q-label">8 of 9</div>
+          <div class="q-text">My child looks forward to going to school most days.</div>
+          <div class="scale-options">
+            <button class="scale-btn" onclick="pick(this,'p10')">Strongly Agree</button>
+            <button class="scale-btn" onclick="pick(this,'p10')">Agree</button>
+            <button class="scale-btn" onclick="pick(this,'p10')">Neutral</button>
+            <button class="scale-btn" onclick="pick(this,'p10')">Disagree</button>
+            <button class="scale-btn" onclick="pick(this,'p10')">Strongly Disagree</button>
+          </div>
+        </div>
+
+        <div class="question" data-q="p12">
+          <div class="q-label">9 of 9 — open</div>
+          <div class="q-text">What does your child genuinely enjoy or value about school this year?</div>
+          <textarea class="open-input" id="p12" oninput="updateProgress()" placeholder="Share what your child looks forward to, values, or feels good about..."></textarea>
+        </div>
+
+        <div class="question" data-q="p13">
+          <div class="q-label">Open — optional</div>
+          <div class="q-text">What is one thing you wish was different about their experience?</div>
+          <textarea class="open-input" id="p13" oninput="updateProgress()" placeholder="Any change — big or small — that would make a difference..."></textarea>
+        </div>
+      </div>
+
+    </div><!-- /survey-body -->
+
+    <!-- SUCCESS -->
+    <div class="success-screen" id="success-screen">
+      <div class="check">✅</div>
+      <h2>Thank you</h2>
+      <p>Your response has been recorded anonymously.<br>Results will be shared with the Grade 7 parent group<br>once we have a full picture from the cohort.</p>
+    </div>
+
+    <!-- SUBMIT -->
+    <div class="submit-area" id="submit-area">
+      <div class="error-msg" id="error-msg">Please answer all questions before submitting.</div>
+      <p class="submit-note">🔒 <strong>Anonymous.</strong> No name or identifying information is collected. Responses are aggregated across the cohort only.</p>
+      <button class="btn-submit" id="submit-btn" onclick="submitSurvey()">Submit response →</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // ── GOOGLE FORM CONFIG ──────────────────────────────────────
+  const FORM_ID = '1FAIpQLSfud92OhN_C3-isv7naOUJLRFK8wZrcP7Pn1mg2B-P-1YxFsQ';
+
+  const ENTRY = {
+    gender: 'entry.578644739',
+    p1:     'entry.988438303',
+    p2:     'entry.1488410026',
+    p3:     'entry.507044069',
+    p4:     'entry.247203983',
+    p5:     'entry.1791288071',
+    p7:     'entry.690520274',
+    p9:     'entry.163563744',
+    p10:    'entry.726306956',
+    p12:    'entry.2063765035',
+    p13:    'entry.1718295855',
+  };
+  // ────────────────────────────────────────────────────────────
+
+  const answers = {};
+  const REQUIRED = ['gender','p1','p2','p3','p4','p5','p7','p9','p10'];
+
+  function pick(btn, qid) {
+    btn.closest('.scale-options, .yesno-options, .gender-options')
+       .querySelectorAll('button')
+       .forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    answers[qid] = btn.textContent.trim();
+    document.querySelector(`[data-q="${qid}"]`).classList.remove('unanswered');
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const done = REQUIRED.filter(q => answers[q]).length;
+    const pct = Math.round((done / REQUIRED.length) * 100);
+    document.getElementById('progress').style.width = pct + '%';
+  }
+
+  function validate() {
+    let valid = true;
+    REQUIRED.forEach(q => {
+      if (!answers[q]) {
+        document.querySelector(`[data-q="${q}"]`).classList.add('unanswered');
+        valid = false;
+      }
+    });
+    return valid;
+  }
+
+  function submitSurvey() {
+    if (!validate()) {
+      const err = document.getElementById('error-msg');
+      err.style.display = 'block';
+      document.querySelector('.unanswered').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    document.getElementById('error-msg').style.display = 'none';
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Submitting…';
+
+    answers.p12 = document.getElementById('p12').value.trim();
+    answers.p13 = document.getElementById('p13').value.trim();
+
+    const base = `https://docs.google.com/forms/d/e/${FORM_ID}/formResponse`;
+    const params = new URLSearchParams();
+    Object.entries(ENTRY).forEach(([qid, entryId]) => {
+      if (answers[qid]) params.append(entryId, answers[qid]);
+    });
+
+    fetch(base, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: params.toString()
+    })
+    .then(() => {
+      document.getElementById('survey-body').style.display = 'none';
+      document.getElementById('submit-area').style.display = 'none';
+      document.getElementById('success-screen').style.display = 'block';
+      document.getElementById('progress').style.width = '100%';
+    })
+    .catch(() => {
+      btn.disabled = false;
+      btn.textContent = 'Submit response →';
+      document.getElementById('error-msg').textContent = 'Something went wrong. Please try again.';
+      document.getElementById('error-msg').style.display = 'block';
+    });
+  }
+</script>
+</body>
+</html>
